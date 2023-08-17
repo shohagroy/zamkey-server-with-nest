@@ -14,3 +14,8 @@ import { Category, CategorySchema } from './schema/Category.schema';
   providers: [CategoryService],
 })
 export class CategoryModule {}
+
+export type ICategoryFilters = {
+  searchTerm?: string;
+  subcategory?: string;
+};

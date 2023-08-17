@@ -38,7 +38,12 @@ export class ApiResponseInterceptor<T>
         const responseData: IApiResponse<T> = {
           statusCode,
           success: statusCode >= 200 && statusCode < 300,
-          data: data || null,
+          message:
+            data.data?.length || data.data?._id
+              ? data.message
+              : 'No data Found',
+          meta: data.meta || null || undefined,
+          data: data.data || null || undefined,
         };
 
         return responseData;

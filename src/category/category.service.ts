@@ -4,6 +4,10 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Category, CategoryDoc } from './schema/Category.schema';
 import { Model } from 'mongoose';
+import { IPaginationOptions } from 'src/interface/pagination.interface';
+import { ICategoryFilters } from './category.module';
+import { paginationHelpers } from 'src/helpers/paginationHelper';
+import { IGenericResponse } from 'src/interface/common';
 
 @Injectable()
 export class CategoryService {
@@ -16,14 +20,35 @@ export class CategoryService {
     return createCategory.save();
   }
 
-  async findAll(): Promise<Category[]> {
-    const result = await this.categoryModel.find().exec();
-    return result;
+  async findAll(
+    paginationOptions: IPaginationOptions,
+    filters: ICategoryFilters,
+  ): Promise<IGenericResponse<Category[]>> {
+    const { page, limit, skip } =
+      paginationHelpers.calculatePagination(paginationOptions);
+
+    console.log(filters);
+
+    // const { subcategory } = filters;
+
+    const query = this.categoryModel.find().skip(skip).limit(limit);
+    const result = await query.exec();
+    const total = await this.categoryModel.countDocuments();
+
+    return {
+      message: 'Categories Recieved Successfully',
+      meta: {
+        page,
+        limit,
+        total,
+      },
+      data: result,
+    };
   }
 
-  async findOne(id: string): Promise<Category> {
+  async findOne(id: string): Promise<IGenericResponse<Category>> {
     const result = await this.categoryModel.findById(id).exec();
-    return result;
+    return { data: result, message: 'Category Recvieved Successfully' };
   }
 
   async update(id: number, updateCategoryDto: UpdateCategoryDto) {

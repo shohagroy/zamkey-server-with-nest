@@ -6,10 +6,14 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import pick from 'src/shared/pick';
+import { paginationFields } from 'src/constants/pagination';
+import { categoryFilterableFields } from './category.constants';
 
 @Controller('api/v1/categories')
 export class CategoryController {
@@ -22,9 +26,11 @@ export class CategoryController {
   }
 
   @Get()
-  async findAll() {
-    const response = await this.categoryService.findAll();
-    return response;
+  async findAll(@Query() queryParams) {
+    const filters = pick(queryParams, categoryFilterableFields);
+    const paginationOptions = pick(queryParams, paginationFields);
+
+    return this.categoryService.findAll(paginationOptions, filters);
   }
 
   @Get(':id')
