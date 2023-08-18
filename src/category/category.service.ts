@@ -33,8 +33,6 @@ export class CategoryService {
 
     const { subcategory } = filters;
 
-    console.log(subcategory);
-
     if (subcategory) {
       const query = this.categoryModel
         .find()
