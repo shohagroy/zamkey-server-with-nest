@@ -15,9 +15,13 @@ export class CategoryService {
     @InjectModel(Category.name) private categoryModel: Model<CategoryDoc>,
   ) {}
 
-  async create(createCategoryDto: CreateCategoryDto): Promise<CategoryDoc> {
+  async create(
+    createCategoryDto: CreateCategoryDto,
+  ): Promise<IGenericResponse<CategoryDoc>> {
     const createCategory = new this.categoryModel(createCategoryDto);
-    return createCategory.save();
+
+    const result = await createCategory.save();
+    return { data: result, message: 'Category Create Successfully!' };
   }
 
   async findAll(
@@ -27,41 +31,77 @@ export class CategoryService {
     const { page, limit, skip } =
       paginationHelpers.calculatePagination(paginationOptions);
 
-    console.log(filters);
+    const { subcategory } = filters;
 
-    // const { subcategory } = filters;
+    console.log(subcategory);
 
-    const query = this.categoryModel.find().skip(skip).limit(limit);
-    const result = await query.exec();
-    const total = await this.categoryModel.countDocuments();
+    if (subcategory) {
+      const query = this.categoryModel
+        .find()
+        .skip(skip)
+        .limit(limit)
+        .populate({
+          path: 'subCategories',
+          model: 'SubCategory',
+          select: ['name'],
+        });
+      const result = await query.exec();
+      const total = await this.categoryModel.countDocuments();
 
-    return {
-      message: 'Categories Recieved Successfully',
-      meta: {
-        page,
-        limit,
-        total,
-      },
-      data: result,
-    };
+      return {
+        message: 'Categories Recieved Successfully',
+        meta: {
+          page,
+          limit,
+          total,
+        },
+        data: result,
+      };
+    } else {
+      const query = this.categoryModel.find().skip(skip).limit(limit);
+
+      const result = await query.exec();
+      const total = await this.categoryModel.countDocuments();
+
+      return {
+        message: 'Categories Recieved Successfully',
+        meta: {
+          page,
+          limit,
+          total,
+        },
+        data: result,
+      };
+    }
   }
 
-  async findOne(id: string): Promise<IGenericResponse<Category>> {
-    const result = await this.categoryModel.findById(id).exec();
+  async findOne(id: string): Promise<IGenericResponse<CategoryDoc>> {
+    const result = await this.categoryModel
+      .findById(id)
+      .populate({
+        path: 'subCategories',
+        model: 'SubCategory',
+        select: ['name'],
+      })
+      .exec();
     return { data: result, message: 'Category Recvieved Successfully' };
   }
 
-  async update(id: number, updateCategoryDto: UpdateCategoryDto) {
+  async update(
+    id: string,
+    updateCategoryDto: UpdateCategoryDto,
+  ): Promise<IGenericResponse<CategoryDoc>> {
     const result = await this.categoryModel.findByIdAndUpdate(
       id,
       updateCategoryDto,
       { new: true },
     );
-    return result;
+    return { data: result, message: 'Category Update Successfully' };
   }
 
-  async remove(id: string): Promise<Category> {
+  async remove(id: string): Promise<IGenericResponse<CategoryDoc>> {
     const result = await this.categoryModel.findByIdAndDelete(id).exec();
-    return result;
+
+    return { data: result, message: 'category Detele Successfully!' };
   }
 }

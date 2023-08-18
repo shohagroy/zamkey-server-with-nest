@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CategoryModule } from './category/category.module';
+import { SubCategoryModule } from './sub-category/sub-category.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { CategoryModule } from './category/category.module';
       inject: [ConfigService],
     }),
     CategoryModule,
+    SubCategoryModule,
   ],
   controllers: [AppController],
   providers: [],
