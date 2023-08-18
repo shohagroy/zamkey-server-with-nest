@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -25,6 +26,7 @@ export class ProductController {
   }
 
   @Get()
+  @UseGuards()
   findAll(@Query() queryParams) {
     const filters = pick(queryParams, productFilterableFields);
     const paginationOptions = pick(queryParams, paginationFields);
