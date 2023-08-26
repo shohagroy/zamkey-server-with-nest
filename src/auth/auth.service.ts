@@ -26,7 +26,11 @@ export class AuthService {
     }
 
     const bcryptPass = await bcrypt.hash(password, 10);
-    const newUser = { email: provaidEmail, password: bcryptPass, role: 'user' };
+    const newUser = {
+      email: provaidEmail,
+      password: bcryptPass,
+      role: 'user',
+    };
 
     const user = await this.userService.create(newUser);
 

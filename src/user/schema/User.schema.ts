@@ -58,7 +58,10 @@ export class User {
   })
   role: string;
 
-  @Prop()
+  @Prop({
+    type: [String],
+    default: [],
+  })
   cartList: [string];
 }
 

@@ -47,8 +47,7 @@ export class UserController {
 
   @UseGuards(AuthGuard('jwt'))
   @ApiSecurity('JWT-Auth')
-  @Post()
-  @Patch(':id')
+  @Patch('/:id')
   updateById(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(id, updateUserDto);
   }

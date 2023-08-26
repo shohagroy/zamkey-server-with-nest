@@ -3,7 +3,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Product, ProductDoc } from './schema/Product.schema';
-import { Model, SortOrder } from 'mongoose';
+import mongoose, { Model, SortOrder } from 'mongoose';
 import { IGenericResponse } from 'src/interface/common';
 import { IPaginationOptions } from 'src/interface/pagination.interface';
 import { IProductFilters, productSearchableFields } from './product.constants';
@@ -107,7 +107,9 @@ export class ProductService {
     };
   }
 
-  async findOne(id: string): Promise<IGenericResponse<ProductDoc>> {
+  async findOne(
+    id: mongoose.Types.ObjectId,
+  ): Promise<IGenericResponse<ProductDoc>> {
     const result = await this.productModel.findById(id);
 
     return { data: result, message: 'Products Recieved Successfully!' };
@@ -126,7 +128,9 @@ export class ProductService {
     return { data: result, message: 'Products Update Successfully!' };
   }
 
-  async remove(id: string): Promise<IGenericResponse<ProductDoc>> {
+  async remove(
+    id: mongoose.Types.ObjectId,
+  ): Promise<IGenericResponse<ProductDoc>> {
     const result = await this.productModel.findByIdAndDelete(id);
 
     return { data: result, message: 'Products Delete Successfully!' };

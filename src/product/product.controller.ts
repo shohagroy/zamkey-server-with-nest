@@ -17,6 +17,7 @@ import { productFilterableFields } from './product.constants';
 import { ApiQuery, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { paginationFields } from 'src/constants/pagination';
+import mongoose from 'mongoose';
 
 @Controller('api/v1/products')
 @ApiTags('products')
@@ -51,7 +52,7 @@ export class ProductController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: mongoose.Types.ObjectId) {
     return this.productService.findOne(id);
   }
 
@@ -65,7 +66,7 @@ export class ProductController {
   @UseGuards(AuthGuard('jwt'))
   @ApiSecurity('JWT-Auth')
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: mongoose.Types.ObjectId) {
     return this.productService.remove(id);
   }
 }

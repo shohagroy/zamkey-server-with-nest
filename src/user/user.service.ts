@@ -3,7 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDoc } from './schema/User.schema';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 
 @Injectable()
 export class UserService {
@@ -14,12 +14,22 @@ export class UserService {
     return result;
   }
 
-  async findById(id: string) {
-    return await this.userModel.findById(id);
+  async findAll() {
+    const result = await this.userModel.find();
+
+    return {
+      data: result,
+      message: 'Users Recieved Successfully!',
+    };
   }
 
-  async findAll() {
-    return await this.userModel.find();
+  async findById(id: string) {
+    const result = await this.userModel.findById(id);
+
+    return {
+      data: result,
+      message: 'User Recieved Successfully!',
+    };
   }
 
   async findAuthUser(email: string): Promise<Partial<UserDoc>> {
@@ -30,12 +40,52 @@ export class UserService {
     return user;
   }
 
-  update(id: string, updateUserDto: UpdateUserDto) {
-    console.log(updateUserDto);
-    return `This action updates a #${id} user`;
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const result = await this.userModel.findByIdAndUpdate(id, updateUserDto, {
+      new: true,
+    });
+
+    return {
+      data: result,
+      message: 'User Update Successfully!',
+    };
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} user`;
+  async remove(id: string) {
+    const result = await this.userModel.findByIdAndDelete(id);
+
+    return {
+      data: result,
+      message: 'User delete Successfully!',
+    };
+  }
+
+  async addToCart(id: string, cartId: mongoose.Types.ObjectId) {
+    const result = await this.userModel.findByIdAndUpdate(
+      { _id: id },
+      {
+        $push: { cartList: cartId },
+      },
+    );
+
+    return {
+      data: result,
+      message: 'User Update Successfully!',
+    };
+  }
+
+  async removeToCart(id: string, productId: mongoose.Types.ObjectId) {
+    const result = await this.userModel.findByIdAndUpdate(
+      { _id: id },
+      {
+        $pull: { cartList: productId },
+      },
+      { new: true },
+    );
+
+    return {
+      data: result,
+      message: 'User Update Successfully!',
+    };
   }
 }
