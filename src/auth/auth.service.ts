@@ -58,8 +58,6 @@ export class AuthService {
   async getLoginUser(payload: Partial<UserDoc>) {
     const isExistingUser = await this.userService.findById(payload._id);
 
-    console.log(isExistingUser);
-
     return isExistingUser;
   }
 }

@@ -6,13 +6,16 @@ import {
   Patch,
   Param,
   Delete,
-  Request,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ApiSecurity, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('api/v1/users')
+@ApiTags('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -21,31 +24,32 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
-  @Post('/auth/login')
-  // @UseGuards(AuthGuard('local'))
-  login(@Request() req) {
-    console.log(req.body);
-    // console.log(createUserDto);
-    // return this.userService.create(createUserDto);
-  }
-
+  @UseGuards(AuthGuard('jwt'))
+  @ApiSecurity('JWT-Auth')
   @Get()
   findAll() {
     return this.userService.findAll();
   }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.userService.findOne(+id);
-  // }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  @UseGuards(AuthGuard('jwt'))
+  @ApiSecurity('JWT-Auth')
+  @Get('/:id')
+  findOne(@Param('id') id: string) {
+    return this.userService.findById(id);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  @UseGuards(AuthGuard('jwt'))
+  @ApiSecurity('JWT-Auth')
+  @Delete('/:id')
+  deleteById(@Param('id') id: string) {
+    return this.userService.remove(id);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @ApiSecurity('JWT-Auth')
+  @Post()
+  @Patch(':id')
+  updateById(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.userService.update(id, updateUserDto);
   }
 }

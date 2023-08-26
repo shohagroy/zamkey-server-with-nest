@@ -9,8 +9,10 @@ import {
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 
 @Controller('api/v1/auth')
+@ApiTags('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -33,6 +35,7 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuard('jwt'))
+  @ApiSecurity('JWT-Auth')
   @Get('/get-login-user')
   async getLoginUser(@Request() req) {
     const response = await this.authService.getLoginUser(req.user);
