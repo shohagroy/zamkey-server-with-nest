@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Request,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -18,6 +19,14 @@ export class UserController {
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
+  }
+
+  @Post('/auth/login')
+  // @UseGuards(AuthGuard('local'))
+  login(@Request() req) {
+    console.log(req.body);
+    // console.log(createUserDto);
+    // return this.userService.create(createUserDto);
   }
 
   @Get()

@@ -9,19 +9,24 @@ import { Model } from 'mongoose';
 export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDoc>) {}
 
-  create(createUserDto: CreateUserDto) {
-    console.log(createUserDto);
-    return createUserDto;
+  async create(createUserDto: CreateUserDto) {
+    const result = await this.userModel.create(createUserDto);
+    return result;
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async findById(id: string) {
+    return await this.userModel.findById(id);
   }
 
-  async findOne(email: string): Promise<Partial<UserDoc>> {
+  async findAll() {
+    return await this.userModel.find();
+  }
+
+  async findAuthUser(email: string): Promise<Partial<UserDoc>> {
     const user = await this.userModel
       .findOne({ email })
-      .select(['firstName', 'role', 'email']);
+      .select(['firstName', 'role', 'email', 'password']);
+
     return user;
   }
 
