@@ -88,11 +88,11 @@ export class CartService {
     }
 
     try {
-      const cartResponse = await this.cartModel.deleteOne({
+      const cart = await this.cartModel.deleteOne({
         productId: createCartDto.productId,
       });
 
-      if (cartResponse.acknowledged) {
+      if (cart.acknowledged) {
         await this.userService.removeToCart(user._id, createCartDto.productId);
 
         return {
