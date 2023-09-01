@@ -4,10 +4,10 @@ import { UpdateSubCategoryDto } from './dto/update-sub-category.dto';
 import { SubCategory, SubCategoryDoc } from './schema/Category.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { IGenericResponse } from 'src/interface/common';
+import { IGenericResponse } from 'interface/common';
 import { Category, CategoryDoc } from 'src/category/schema/Category.schema';
-import { IPaginationOptions } from 'src/interface/pagination.interface';
-import { paginationHelpers } from 'src/helpers/paginationHelper';
+import { IPaginationOptions } from 'interface/pagination.interface';
+import { paginationHelpers } from '../../helpers/paginationHelper';
 
 @Injectable()
 export class SubCategoryService {

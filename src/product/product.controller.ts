@@ -12,11 +12,11 @@ import {
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import pick from 'src/shared/pick';
+import pick from '../../shared/pick';
 import { productFilterableFields } from './product.constants';
 import { ApiQuery, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
-import { paginationFields } from 'src/constants/pagination';
+import { paginationFields } from '../../constants/pagination';
 import mongoose from 'mongoose';
 
 @Controller('api/v1/products')

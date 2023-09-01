@@ -12,10 +12,10 @@ import {
 import { SubCategoryService } from './sub-category.service';
 import { CreateSubCategoryDto } from './dto/create-sub-category.dto';
 import { UpdateSubCategoryDto } from './dto/update-sub-category.dto';
-import pick from 'src/shared/pick';
+import pick from '../../shared/pick';
 import { ApiQuery, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
-import { paginationFields } from 'src/constants/pagination';
+import { paginationFields } from '../../constants/pagination';
 
 @Controller('api/v1/categories/:categoryId/subcategories')
 @ApiTags('subcategories')

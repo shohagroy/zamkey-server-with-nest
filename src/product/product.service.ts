@@ -4,10 +4,10 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Product, ProductDoc } from './schema/Product.schema';
 import mongoose, { Model, SortOrder } from 'mongoose';
-import { IGenericResponse } from 'src/interface/common';
-import { IPaginationOptions } from 'src/interface/pagination.interface';
+import { IGenericResponse } from 'interface/common';
+import { IPaginationOptions } from 'interface/pagination.interface';
 import { IProductFilters, productSearchableFields } from './product.constants';
-import { paginationHelpers } from 'src/helpers/paginationHelper';
+import { paginationHelpers } from '../../helpers/paginationHelper';
 
 @Injectable()
 export class ProductService {

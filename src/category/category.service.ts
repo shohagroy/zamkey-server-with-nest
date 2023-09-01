@@ -4,10 +4,10 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Category, CategoryDoc } from './schema/Category.schema';
 import { Model } from 'mongoose';
-import { IPaginationOptions } from 'src/interface/pagination.interface';
+import { IPaginationOptions } from 'interface/pagination.interface';
 import { ICategoryFilters } from './category.module';
-import { paginationHelpers } from 'src/helpers/paginationHelper';
-import { IGenericResponse } from 'src/interface/common';
+import { paginationHelpers } from '../../helpers/paginationHelper';
+import { IGenericResponse } from 'interface/common';
 
 @Injectable()
 export class CategoryService {

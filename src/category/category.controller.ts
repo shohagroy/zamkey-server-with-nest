@@ -12,11 +12,11 @@ import {
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import pick from 'src/shared/pick';
+import pick from '../../shared/pick';
 import { categoryFilterableFields } from './category.constants';
 import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
-import { paginationFields } from 'src/constants/pagination';
+import { paginationFields } from '../../constants/pagination';
 import { ApiQuery } from '@nestjs/swagger';
 
 @Controller('api/v1/categories')

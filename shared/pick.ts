@@ -1,5 +1,7 @@
-/* eslint-disable prettier/prettier */
-const pick = <T extends Record<string, unknown>, k extends keyof T>(
+/* eslint-disable prettier/prettier */ const pick = <
+  T extends Record<string, unknown>,
+  k extends keyof T,
+>(
   obj: T,
   keys: k[],
 ): Partial<T> => {

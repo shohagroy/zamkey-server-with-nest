@@ -1,8 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ApiResponseInterceptor } from './shared/ApiResponseInterceptor';
-import { AllExceptionsFilter } from './shared/AllExceptionsFilter';
+import { ApiResponseInterceptor } from '../shared/ApiResponseInterceptor';
+import { AllExceptionsFilter } from '../shared/AllExceptionsFilter';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import * as express from 'express'; // Import express
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -29,6 +30,9 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/doc', app, document);
+
+  // Serve static Swagger UI files
+  app.use('/swagger-ui', express.static('public/swagger-ui'));
 
   await app.listen(process.env.PORT);
 }
