@@ -110,6 +110,7 @@ export class ProductService {
   async findOne(
     id: mongoose.Types.ObjectId,
   ): Promise<IGenericResponse<ProductDoc>> {
+    console.log(id);
     const result = await this.productModel.findById(id);
 
     return { data: result, message: 'Products Recieved Successfully!' };

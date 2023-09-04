@@ -7,15 +7,14 @@ import {
   Param,
   Delete,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import pick from '../../shared/pick';
 import { productFilterableFields } from './product.constants';
-import { ApiQuery, ApiSecurity, ApiTags } from '@nestjs/swagger';
-import { AuthGuard } from '@nestjs/passport';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
+// import { AuthGuard } from '@nestjs/passport';
 import { paginationFields } from '../../constants/pagination';
 import mongoose from 'mongoose';
 
@@ -24,8 +23,8 @@ import mongoose from 'mongoose';
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @UseGuards(AuthGuard('jwt'))
-  @ApiSecurity('JWT-Auth')
+  // @UseGuards(AuthGuard('jwt'))
+  // @ApiSecurity('JWT-Auth')
   @Post()
   create(@Body() createProductDto: CreateProductDto) {
     return this.productService.create(createProductDto);
@@ -56,15 +55,15 @@ export class ProductController {
     return this.productService.findOne(id);
   }
 
-  @UseGuards(AuthGuard('jwt'))
-  @ApiSecurity('JWT-Auth')
+  // @UseGuards(AuthGuard('jwt'))
+  // @ApiSecurity('JWT-Auth')
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
     return this.productService.update(id, updateProductDto);
   }
 
-  @UseGuards(AuthGuard('jwt'))
-  @ApiSecurity('JWT-Auth')
+  // @UseGuards(AuthGuard('jwt'))
+  // @ApiSecurity('JWT-Auth')
   @Delete(':id')
   remove(@Param('id') id: mongoose.Types.ObjectId) {
     return this.productService.remove(id);

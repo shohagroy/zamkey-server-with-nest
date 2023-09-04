@@ -7,15 +7,13 @@ import {
   Param,
   Delete,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import pick from '../../shared/pick';
 import { categoryFilterableFields } from './category.constants';
-import { ApiSecurity, ApiTags } from '@nestjs/swagger';
-import { AuthGuard } from '@nestjs/passport';
+import { ApiTags } from '@nestjs/swagger';
 import { paginationFields } from '../../constants/pagination';
 import { ApiQuery } from '@nestjs/swagger';
 
@@ -24,8 +22,8 @@ import { ApiQuery } from '@nestjs/swagger';
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
-  @UseGuards(AuthGuard('jwt'))
-  @ApiSecurity('JWT-Auth')
+  // @UseGuards(AuthGuard('jwt'))
+  // @ApiSecurity('JWT-Auth')
   @Post()
   create(@Body() createCategoryDto: CreateCategoryDto) {
     const response = this.categoryService.create(createCategoryDto);
@@ -51,8 +49,8 @@ export class CategoryController {
     return this.categoryService.findOne(id);
   }
 
-  @UseGuards(AuthGuard('jwt'))
-  @ApiSecurity('JWT-Auth')
+  // @UseGuards(AuthGuard('jwt'))
+  // @ApiSecurity('JWT-Auth')
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -61,8 +59,8 @@ export class CategoryController {
     return this.categoryService.update(id, updateCategoryDto);
   }
 
-  @UseGuards(AuthGuard('jwt'))
-  @ApiSecurity('JWT-Auth')
+  // @UseGuards(AuthGuard('jwt'))
+  // @ApiSecurity('JWT-Auth')
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.categoryService.remove(id);

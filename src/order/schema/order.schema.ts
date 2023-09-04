@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { Document } from 'mongoose';
-import { Delivary_status, OrderType } from '../order.constants';
+import { Document } from 'mongoose';
+import { OrderType } from '../order.constants';
 
 export type OrderDoc = Order & Document;
 
@@ -13,29 +13,10 @@ export class Order {
   productName: string;
 
   @Prop({
-    type: mongoose.Types.ObjectId,
-    ref: 'Product',
+    type: String,
     required: true,
   })
-  productID: mongoose.Types.ObjectId;
-
-  @Prop({
-    type: Number,
-    required: true,
-  })
-  price: number;
-
-  @Prop({
-    type: Number,
-    required: true,
-  })
-  discount: number;
-
-  @Prop({
-    type: Number,
-    required: true,
-  })
-  quantity: number;
+  productCategory: string;
 
   @Prop({
     type: String,
@@ -57,9 +38,8 @@ export class Order {
   @Prop({
     type: String,
     required: true,
-    default: Delivary_status.PENDING,
   })
-  delivary_status: Delivary_status;
+  delivary_status: string;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);

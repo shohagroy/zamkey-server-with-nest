@@ -1,108 +1,33 @@
 import { Injectable } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { UpdateOrderDto } from './dto/update-order.dto';
 import { UserDoc } from 'src/user/schema/User.schema';
 import { ProductService } from 'src/product/product.service';
-import { Order, OrderDoc } from './schema/order.schema';
-import { OrderType } from './order.constants';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { IPaginationOptions } from 'interface/pagination.interface';
-import { paginationHelpers } from 'helpers/paginationHelper';
-import bkash from 'configs/BkashConfig';
 
 @Injectable()
 export class OrderService {
-  constructor(
-    @InjectModel(Order.name) private orderModel: Model<OrderDoc>,
-    private readonly productService: ProductService,
-  ) {}
-
+  private productService: ProductService;
   async create(createOrderDto: CreateOrderDto, user: UserDoc) {
-    const { orderType, productID, quantity } = createOrderDto;
+    const { orderType, productID } = createOrderDto;
 
+    console.log(orderType, productID);
     const orderProduct = await this.productService.findOne(productID);
 
-    const productPrice = orderProduct.data.price;
-    const discountPercentage = orderProduct.data.discount;
-
-    const totalPrice = productPrice * quantity * (1 - discountPercentage / 100);
-
-    const orderInfo = {
-      productName: orderProduct.data.title,
-      productID,
-      price: orderProduct.data.price,
-      discount: orderProduct.data.discount,
-      quantity: quantity,
-      paymentMethod: orderType,
-      totalPrice,
-      userId: user._id,
-    };
-
-    if (orderType === OrderType.CASH_ON_DELIVERY) {
-      const result = await this.orderModel.create(orderInfo);
-
-      return {
-        data: result,
-        message: 'Order Created Successfully!',
-      };
-    }
-
-    if (orderType === OrderType.BKASH_PAYMENT) {
-      console.log('bkash payment', orderInfo);
-
-      const paymentRequest: any = {
-        amount: 1000,
-        orderID: 'ORD1020069',
-        intent: 'sale',
-      };
-
-      try {
-        const result = await bkash.createPayment(paymentRequest);
-
-        console.log(result);
-      } catch (error) {
-        console.log(error);
-      }
-
-      // return {
-      //   data: result,
-      //   message: 'Order Created Successfully!',
-      // };
-    }
+    console.log(orderProduct);
 
     return 'This action adds a new order';
   }
 
-  async findAll(paginationOptions: IPaginationOptions, user: UserDoc) {
-    const { page, limit, skip } =
-      paginationHelpers.calculatePagination(paginationOptions);
-
-    const result = await this.orderModel
-      .find({ userId: user?._id })
-      .skip(skip)
-      .limit(limit)
-      .exec();
-
-    const total = await this.orderModel.countDocuments();
-
-    return {
-      message: 'Orderlist Recieved Successfully',
-      meta: {
-        page,
-        limit,
-        total,
-      },
-      data: result,
-    };
+  findAll() {
+    return `This action returns all order`;
   }
 
-  async findOne(id: string) {
-    const result = await this.orderModel.findById(id).populate('productID');
+  findOne(id: number) {
+    return `This action returns a #${id} order`;
+  }
 
-    return {
-      data: result,
-      message: 'Order Recieved Successfully!',
-    };
+  update(id: number, updateOrderDto: UpdateOrderDto) {
+    return `This action updates a #${id} order`;
   }
 
   remove(id: number) {
