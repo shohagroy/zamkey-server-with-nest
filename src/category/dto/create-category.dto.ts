@@ -6,5 +6,8 @@ export class CreateCategoryDto {
   @ApiProperty()
   description: string;
   @ApiProperty()
-  icon: string;
+  icon?: {
+    id: string;
+    url: string;
+  };
 }

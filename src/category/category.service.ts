@@ -8,6 +8,7 @@ import { IPaginationOptions } from 'interface/pagination.interface';
 import { ICategoryFilters } from './category.module';
 import { paginationHelpers } from '../../helpers/paginationHelper';
 import { IGenericResponse } from 'interface/common';
+import { deleteImages, uploadImages } from 'utils/uploadImages';
 
 @Injectable()
 export class CategoryService {
@@ -18,16 +19,20 @@ export class CategoryService {
   async create(
     createCategoryDto: CreateCategoryDto,
   ): Promise<IGenericResponse<CategoryDoc>> {
-    const createCategory = new this.categoryModel(createCategoryDto);
+    const imageData = [createCategoryDto?.icon];
 
+    const images = await uploadImages(imageData);
+    createCategoryDto.icon = images[0];
+
+    const createCategory = new this.categoryModel(createCategoryDto);
     const result = await createCategory.save();
-    return { data: result, message: 'Category Create Successfully!' };
+    return { data: result, message: 'Category Create Successfully' };
   }
 
   async findAll(
     paginationOptions: IPaginationOptions,
     filters: ICategoryFilters,
-  ): Promise<IGenericResponse<Category[]>> {
+  ): Promise<IGenericResponse<CategoryDoc[]>> {
     const { page, limit, skip } =
       paginationHelpers.calculatePagination(paginationOptions);
 
@@ -85,6 +90,19 @@ export class CategoryService {
     return { data: result, message: 'Category Recvieved Successfully' };
   }
 
+  async findByName(name: string) {
+    const result = await this.categoryModel
+      .findOne({ name })
+      .populate({
+        path: 'subCategories',
+        model: 'SubCategory',
+        select: ['name'],
+      })
+      .exec();
+    // return { data: result, message: 'Category Recvieved Successfully' };
+    return result;
+  }
+
   async update(
     id: string,
     updateCategoryDto: UpdateCategoryDto,
@@ -97,7 +115,12 @@ export class CategoryService {
     return { data: result, message: 'Category Update Successfully' };
   }
 
-  async remove(id: string): Promise<IGenericResponse<CategoryDoc>> {
+  async remove(id: string) {
+    const category = await this.categoryModel.findById(id);
+
+    const images = [category?.icon];
+    await deleteImages(images);
+
     const result = await this.categoryModel.findByIdAndDelete(id).exec();
 
     return { data: result, message: 'category Detele Successfully!' };

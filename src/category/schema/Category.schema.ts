@@ -16,8 +16,16 @@ export class Category {
   @Prop()
   description: string;
 
-  @Prop()
-  icon: string;
+  @Prop({
+    type: {
+      id: String,
+      url: String,
+    },
+  })
+  icon?: {
+    id: string;
+    url: string;
+  };
 
   @Prop()
   subCategories: [string];

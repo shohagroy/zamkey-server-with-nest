@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Query,
+  ConflictException,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -25,9 +26,16 @@ export class CategoryController {
   // @UseGuards(AuthGuard('jwt'))
   // @ApiSecurity('JWT-Auth')
   @Post()
-  create(@Body() createCategoryDto: CreateCategoryDto) {
-    const response = this.categoryService.create(createCategoryDto);
-    return response;
+  async create(@Body() createCategoryDto: CreateCategoryDto) {
+    const isAlreadyExist = await this.categoryService.findByName(
+      createCategoryDto.name,
+    );
+
+    if (isAlreadyExist) {
+      throw new ConflictException('Category Already Exist');
+    }
+
+    return await this.categoryService.create(createCategoryDto);
   }
 
   @ApiQuery({ name: 'searchTerm', required: false })
