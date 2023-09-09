@@ -8,7 +8,7 @@ import { IPaginationOptions } from 'interface/pagination.interface';
 import { ICategoryFilters } from './category.module';
 import { paginationHelpers } from '../../helpers/paginationHelper';
 import { IGenericResponse } from 'interface/common';
-import { deleteImages, uploadImages } from 'utils/uploadImages';
+import { deleteImages, uploadImages } from '../../utils/uploadImages';
 
 @Injectable()
 export class CategoryService {

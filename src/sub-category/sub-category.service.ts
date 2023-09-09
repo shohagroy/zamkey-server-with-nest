@@ -8,7 +8,7 @@ import { IGenericResponse } from 'interface/common';
 import { Category, CategoryDoc } from 'src/category/schema/Category.schema';
 import { IPaginationOptions } from 'interface/pagination.interface';
 import { paginationHelpers } from '../../helpers/paginationHelper';
-import { deleteImages, uploadImages } from 'utils/uploadImages';
+import { deleteImages, uploadImages } from '../../utils/uploadImages';
 
 @Injectable()
 export class SubCategoryService {
