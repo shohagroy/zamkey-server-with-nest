@@ -16,6 +16,9 @@ export class Product {
   @Prop()
   description: string;
 
+  @Prop()
+  images: Array<{ id: string; url: string }>;
+
   @Prop({
     type: Number,
     required: true,

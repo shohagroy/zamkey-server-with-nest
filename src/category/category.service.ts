@@ -90,23 +90,19 @@ export class CategoryService {
     return { data: result, message: 'Category Recvieved Successfully' };
   }
 
-  async findByName(name: string) {
-    const result = await this.categoryModel
-      .findOne({ name })
-      .populate({
-        path: 'subCategories',
-        model: 'SubCategory',
-        select: ['name'],
-      })
-      .exec();
-    // return { data: result, message: 'Category Recvieved Successfully' };
-    return result;
-  }
-
   async update(
     id: string,
     updateCategoryDto: UpdateCategoryDto,
   ): Promise<IGenericResponse<CategoryDoc>> {
+    if (updateCategoryDto?.icon) {
+      const category = await this.categoryModel.findById(id);
+      const oldImage = [category?.icon];
+      await deleteImages(oldImage);
+      const imageData = [updateCategoryDto?.icon];
+      const images = await uploadImages(imageData);
+      updateCategoryDto.icon = images[0];
+    }
+
     const result = await this.categoryModel.findByIdAndUpdate(
       id,
       updateCategoryDto,
@@ -122,7 +118,19 @@ export class CategoryService {
     await deleteImages(images);
 
     const result = await this.categoryModel.findByIdAndDelete(id).exec();
-
     return { data: result, message: 'category Detele Successfully!' };
+  }
+
+  async findByName(name: string) {
+    const result = await this.categoryModel
+      .findOne({ name })
+      .populate({
+        path: 'subCategories',
+        model: 'SubCategory',
+        select: ['name'],
+      })
+      .exec();
+    // return { data: result, message: 'Category Recvieved Successfully' };
+    return result;
   }
 }

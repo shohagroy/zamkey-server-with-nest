@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Query,
+  ConflictException,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -26,7 +27,14 @@ export class ProductController {
   // @UseGuards(AuthGuard('jwt'))
   // @ApiSecurity('JWT-Auth')
   @Post()
-  create(@Body() createProductDto: CreateProductDto) {
+  async create(@Body() createProductDto: CreateProductDto) {
+    const isAlreadyExist = await this.productService.findByName(
+      createProductDto.title,
+    );
+
+    if (isAlreadyExist) {
+      throw new ConflictException('Product Already Exist');
+    }
     return this.productService.create(createProductDto);
   }
 

@@ -8,7 +8,10 @@ export class CreateSubCategoryDto {
   description: string;
 
   @ApiProperty()
-  icon: string;
+  icon?: {
+    id: string;
+    url: string;
+  };
 
   @ApiProperty()
   category: string;

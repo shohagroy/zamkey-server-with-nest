@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Query,
+  ConflictException,
 } from '@nestjs/common';
 import { SubCategoryService } from './sub-category.service';
 import { CreateSubCategoryDto } from './dto/create-sub-category.dto';
@@ -24,12 +25,19 @@ export class SubCategoryController {
   // @UseGuards(AuthGuard('jwt'))
   // @ApiSecurity('JWT-Auth')
   @Post()
-  create(
+  async create(
     @Param('categoryId') categoryId: string,
     @Body() createSubCategoryDto: CreateSubCategoryDto,
   ) {
+    const isAlreadyExist = await this.subCategoryService.findByName(
+      createSubCategoryDto.name,
+    );
+
+    if (isAlreadyExist) {
+      throw new ConflictException('Sub Category Already Exist');
+    }
     createSubCategoryDto.category = categoryId;
-    return this.subCategoryService.create(createSubCategoryDto);
+    return await this.subCategoryService.create(createSubCategoryDto);
   }
 
   @ApiQuery({ name: 'page', required: false })

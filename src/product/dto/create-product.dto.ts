@@ -9,6 +9,9 @@ export class CreateProductDto {
   description?: string;
 
   @ApiProperty()
+  images: Array<{ id: string; url: string }>;
+
+  @ApiProperty()
   price: number;
 
   @ApiProperty()

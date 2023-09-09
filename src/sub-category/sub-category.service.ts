@@ -1,13 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateSubCategoryDto } from './dto/create-sub-category.dto';
 import { UpdateSubCategoryDto } from './dto/update-sub-category.dto';
-import { SubCategory, SubCategoryDoc } from './schema/Category.schema';
+import { SubCategory, SubCategoryDoc } from './schema/SubCategory.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { IGenericResponse } from 'interface/common';
 import { Category, CategoryDoc } from 'src/category/schema/Category.schema';
 import { IPaginationOptions } from 'interface/pagination.interface';
 import { paginationHelpers } from '../../helpers/paginationHelper';
+import { deleteImages, uploadImages } from 'utils/uploadImages';
 
 @Injectable()
 export class SubCategoryService {
@@ -20,6 +21,10 @@ export class SubCategoryService {
   async create(
     createSubCategoryDto: CreateSubCategoryDto,
   ): Promise<IGenericResponse<SubCategoryDoc>> {
+    const imageData = [createSubCategoryDto?.icon];
+    const images = await uploadImages(imageData);
+    createSubCategoryDto.icon = images[0];
+
     const createSubCategory = new this.subCategoryModel(createSubCategoryDto);
     const subCategory = await createSubCategory.save();
 
@@ -68,6 +73,15 @@ export class SubCategoryService {
   }
 
   async update(id: string, updateSubCategoryDto: UpdateSubCategoryDto) {
+    if (updateSubCategoryDto?.icon) {
+      const subCategory = await this.subCategoryModel.findById(id);
+      const oldImage = [subCategory?.icon];
+      await deleteImages(oldImage);
+      const imageData = [updateSubCategoryDto?.icon];
+      const images = await uploadImages(imageData);
+      updateSubCategoryDto.icon = images[0];
+    }
+
     const result = await this.subCategoryModel.findByIdAndUpdate(
       id,
       updateSubCategoryDto,
@@ -78,8 +92,22 @@ export class SubCategoryService {
   }
 
   async remove(id: string) {
+    const subCategory = await this.subCategoryModel.findById(id);
+
+    if (!subCategory) {
+      throw new NotFoundException('Sub-Category Not Found');
+    }
+
+    await deleteImages([subCategory?.icon]);
     const result = await this.subCategoryModel.findByIdAndDelete(id);
 
     return { data: result, message: 'Sub-Category Delete Successfully' };
+  }
+
+  async findByName(name: string) {
+    const result = await this.subCategoryModel
+      .findOne({ name })
+      .populate({ path: 'category' });
+    return result;
   }
 }

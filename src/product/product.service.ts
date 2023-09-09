@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -8,6 +8,7 @@ import { IGenericResponse } from 'interface/common';
 import { IPaginationOptions } from 'interface/pagination.interface';
 import { IProductFilters, productSearchableFields } from './product.constants';
 import { paginationHelpers } from '../../helpers/paginationHelper';
+import { deleteImages, uploadImages } from 'utils/uploadImages';
 
 @Injectable()
 export class ProductService {
@@ -17,8 +18,11 @@ export class ProductService {
   async create(
     createProductDto: CreateProductDto,
   ): Promise<IGenericResponse<ProductDoc>> {
-    const result = await this.productModel.create(createProductDto);
+    const imagesData = createProductDto?.images;
+    const images = await uploadImages(imagesData);
+    createProductDto.images = images;
 
+    const result = await this.productModel.create(createProductDto);
     return { data: result, message: 'Product Create Successfully!' };
   }
 
@@ -110,7 +114,6 @@ export class ProductService {
   async findOne(
     id: mongoose.Types.ObjectId,
   ): Promise<IGenericResponse<ProductDoc>> {
-    console.log(id);
     const result = await this.productModel.findById(id);
 
     return { data: result, message: 'Products Recieved Successfully!' };
@@ -132,8 +135,22 @@ export class ProductService {
   async remove(
     id: mongoose.Types.ObjectId,
   ): Promise<IGenericResponse<ProductDoc>> {
-    const result = await this.productModel.findByIdAndDelete(id);
+    const product = await this.productModel.findById(id);
 
+    if (!product) {
+      throw new NotFoundException('Product Not Found');
+    }
+
+    const images = product.images;
+    await deleteImages(images);
+
+    const result = await this.productModel.findByIdAndDelete(id);
     return { data: result, message: 'Products Delete Successfully!' };
+  }
+
+  async findByName(name: string) {
+    const result = await this.productModel.findOne({ name });
+
+    return result;
   }
 }
